@@ -12,6 +12,7 @@ export const KEYS = {
   ticketKey: 'guest.ticket.key',
   pushToken: 'guest.push.token',
   language: 'guest.language',
+  auth: 'clinic.auth',
 } as const;
 
 export function readJSON<T>(key: string): T | null {

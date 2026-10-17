@@ -4,6 +4,8 @@ import { serviceRepo, ticketRepo } from '@/models/db';
 import type { TenantRef } from '@/models/types';
 import type { GuestApi } from '@/services/guestApi';
 import { guestApi } from '@/services/guestApi';
+import type { MobileApi } from '@/services/mobileApi';
+import { mobileApi } from '@/services/mobileApi';
 import { registerDevice, unregisterDevice } from '@/lib/push';
 import { storage } from '@/services/storage';
 
@@ -24,6 +26,7 @@ export type Container = {
     unregister: typeof unregisterDevice;
   };
   api: (tenant: TenantRef) => GuestApi;
+  mobileApi: (tenant: TenantRef) => MobileApi;
 };
 
 export const container: Container = {
@@ -32,6 +35,7 @@ export const container: Container = {
   tickets: ticketRepo,
   push: { register: registerDevice, unregister: unregisterDevice },
   api: guestApi,
+  mobileApi,
 };
 
 const DependencyContext = createContext<Container>(container);
