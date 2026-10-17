@@ -51,17 +51,20 @@ export function TicketScreen({ navigation }: Props) {
     previousStatus.current = live.status;
   }, [live?.status]);
 
-  // Ask for notification permission once, so the local alert can show.
+  // Permission plus, when a push provider exists, registering this device.
+  // Both are optional: without them the screen simply keeps polling.
   useEffect(() => {
-    if (!ticketKey) {
+    if (!ticketKey || !tenant) {
       return undefined;
     }
 
     let cancelled = false;
 
-    if (!cancelled) {
-      void push.prepare();
-    }
+    void push.register(api(tenant), ticketKey).then((registered) => {
+      if (!cancelled && registered) {
+        storage.set(KEYS.pushToken, registered);
+      }
+    });
 
     return () => {
       cancelled = true;

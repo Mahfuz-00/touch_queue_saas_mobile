@@ -6,7 +6,7 @@ import type { GuestApi } from '@/services/guestApi';
 import { guestApi } from '@/services/guestApi';
 import type { MobileApi } from '@/services/mobileApi';
 import { mobileApi } from '@/services/mobileApi';
-import { notifyCalled, prepare } from '@/lib/push';
+import { notifyCalled, prepare, register } from '@/lib/push';
 import { storage } from '@/services/storage';
 
 /**
@@ -23,6 +23,7 @@ export type Container = {
   tickets: typeof ticketRepo;
   push: {
     prepare: typeof prepare;
+    register: typeof register;
     notifyCalled: typeof notifyCalled;
   };
   api: (tenant: TenantRef) => GuestApi;
@@ -33,7 +34,7 @@ export const container: Container = {
   storage,
   services: serviceRepo,
   tickets: ticketRepo,
-  push: { prepare, notifyCalled },
+  push: { prepare, register, notifyCalled },
   api: guestApi,
   mobileApi,
 };

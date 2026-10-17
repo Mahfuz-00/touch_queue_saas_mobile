@@ -1,4 +1,7 @@
 import notifee, { AndroidImportance } from '@notifee/react-native';
+import { Platform } from 'react-native';
+
+import type { GuestApi } from '@/services/guestApi';
 
 /**
  * Call alerts while the app is alive.
@@ -42,5 +45,46 @@ export async function notifyCalled(fullTokenNo: string | null, counterName?: str
     });
   } catch {
     // A missed notification must never break the ticket screen.
+  }
+}
+
+/**
+ * The device's push registration token, or null when no provider is installed.
+ *
+ * FCM is the intended provider, and this is the only place that has to change
+ * for it: add @react-native-firebase/app and @react-native-firebase/messaging
+ * (which needs google-services.json in the project) and return
+ * `await messaging().getToken()` here. Registration then starts flowing to the
+ * backend, which already delivers through FCM when its own credentials are set.
+ *
+ * Until then push is simply off, and the ticket screen keeps polling — the
+ * channel that works with no setup at all.
+ */
+export async function registrationToken(): Promise<string | null> {
+  return null;
+}
+
+/**
+ * Ask for notification permission and, when a provider can supply a token,
+ * register this device so the clinic can reach it while the screen is locked.
+ */
+export async function register(api: GuestApi, ticketKey: string): Promise<string | null> {
+  if (!(await prepare())) {
+    return null;
+  }
+
+  const token = await registrationToken();
+
+  if (!token) {
+    return null;
+  }
+
+  try {
+    await api.registerDevice({ key: ticketKey, push_token: token, platform: Platform.OS });
+
+    return token;
+  } catch {
+    // Registration failing only means this device relies on polling.
+    return null;
   }
 }

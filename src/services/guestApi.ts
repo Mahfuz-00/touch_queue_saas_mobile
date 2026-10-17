@@ -67,10 +67,10 @@ export function guestApi(tenant: TenantRef) {
     ticket: (key: string, signal?: AbortSignal) =>
       request<TicketResponse>(base, `/api/v1/guest/token?key=${encodeURIComponent(key)}`, {}, signal),
 
-    registerDevice: (body: { key: string; expo_push_token: string; platform?: string }, signal?: AbortSignal) =>
+    registerDevice: (body: { key: string; push_token: string; platform?: string }, signal?: AbortSignal) =>
       request<{ status: string }>(base, '/api/v1/guest/device', { method: 'POST', body: JSON.stringify(body) }, signal),
 
-    unregisterDevice: (body: { key: string; expo_push_token: string }, signal?: AbortSignal) =>
+    unregisterDevice: (body: { key: string; push_token: string }, signal?: AbortSignal) =>
       request<{ status: string }>(base, '/api/v1/guest/device', { method: 'DELETE', body: JSON.stringify(body) }, signal),
   };
 }
