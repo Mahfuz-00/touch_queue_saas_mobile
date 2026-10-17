@@ -4,6 +4,7 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Button, Card, Field, Notice, Screen } from '@/components/ui';
 import { useChooseTenant } from '@/controllers/tenant';
+import { QUICK_PICK_TENANTS } from '@/config';
 import { tenantFromSubdomain } from '@/lib/utils';
 import type { RootStackParamList } from '@/navigation';
 
@@ -21,14 +22,7 @@ export function TenantScreen({ navigation }: Props) {
   const { choose, busy, error } = useChooseTenant();
   const [code, setCode] = useState('');
 
-  const quickPicks = useMemo(
-    () =>
-      String(process.env.EXPO_PUBLIC_TENANTS ?? '')
-        .split(',')
-        .map((entry) => entry.trim())
-        .filter(Boolean),
-    [],
-  );
+  const quickPicks = useMemo(() => QUICK_PICK_TENANTS, []);
 
   const submit = async (subdomain: string) => {
     if (await choose(tenantFromSubdomain(subdomain))) {

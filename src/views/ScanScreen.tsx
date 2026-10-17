@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useCallback, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
 
 import { Button, Notice, Screen } from '@/components/ui';
 import { useChooseTenant } from '@/controllers/tenant';
@@ -18,13 +18,14 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Scan'>;
  * itself while we validate so a burst of frames cannot fire two lookups.
  */
 export function ScanScreen({ navigation }: Props) {
-  const [permission, requestPermission] = useCameraPermissions();
+  const { hasPermission, requestPermission } = useCameraPermission();
+  const device = useCameraDevice('back');
   const { choose, busy, error, setError } = useChooseTenant();
   const [handled, setHandled] = useState(false);
   const inFlight = useRef(false);
 
   const onScanned = useCallback(
-    async ({ data }: { data: string }) => {
+    async (data: string) => {
       if (inFlight.current || handled) {
         return;
       }
@@ -51,22 +52,25 @@ export function ScanScreen({ navigation }: Props) {
     [choose, handled, navigation, setError],
   );
 
-  if (!permission) {
-    return (
-      <Screen>
-        <Text className="mt-10 text-center text-muted">Preparing the camera…</Text>
-      </Screen>
-    );
-  }
+  const codeScanner = useCodeScanner({
+    codeTypes: ['qr'],
+    onCodeScanned: (codes) => {
+      const value = codes[0]?.value;
 
-  if (!permission.granted) {
+      if (value) {
+        void onScanned(value);
+      }
+    },
+  });
+
+  if (!hasPermission) {
     return (
       <Screen>
         <Text className="mt-6 text-lg font-bold text-primary">Camera access needed</Text>
         <Text className="mt-1 text-sm text-muted">
           Touch Queue uses the camera only to read the clinic's join code.
         </Text>
-        <Button title="Allow camera" onPress={requestPermission} className="mt-4" />
+        <Button title="Allow camera" onPress={() => requestPermission()} className="mt-4" />
         <Button title="Enter the code instead" variant="ghost" onPress={() => navigation.goBack()} className="mt-2" />
       </Screen>
     );
@@ -78,12 +82,11 @@ export function ScanScreen({ navigation }: Props) {
       <Text className="mt-1 text-sm text-muted">Point the camera at the QR code at the entrance or reception.</Text>
 
       <View className="mt-4 h-80 overflow-hidden rounded-2xl border border-border bg-black">
-        <CameraView
-          style={{ flex: 1 }}
-          facing="back"
-          barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-          onBarcodeScanned={handled ? undefined : onScanned}
-        />
+        {device ? (
+          <Camera style={StyleSheet.absoluteFill} device={device} isActive={!handled} codeScanner={codeScanner} />
+        ) : (
+          <Text className="mt-10 text-center text-white">No camera available on this device.</Text>
+        )}
       </View>
 
       {busy ? <Text className="mt-3 text-center text-sm text-muted">Checking the clinic…</Text> : null}

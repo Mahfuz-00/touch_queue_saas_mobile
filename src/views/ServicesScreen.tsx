@@ -1,7 +1,6 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Image } from 'expo-image';
 import { memo, useCallback } from 'react';
-import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Pressable, Text, View } from 'react-native';
 
 import { Badge, Button, Card, Notice, Screen } from '@/components/ui';
 import { useGuestInit, useServices } from '@/controllers/guest';

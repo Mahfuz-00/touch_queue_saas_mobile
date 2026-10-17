@@ -1,17 +1,17 @@
-import * as Speech from 'expo-speech';
+import Tts from 'react-native-tts';
 import { Platform, Vibration } from 'react-native';
 
 /**
  * Foreground alerting: say the token and buzz the phone.
  *
- * Both are best effort. Speech can be silenced by a device setting, and
- * vibration is Android-only (iOS exposes no API for it), which is exactly why
- * the ticket screen also shows a dialog — the one channel that always works.
+ * Both are best effort. Speech can be silenced by a device setting, and vibration
+ * is Android-only (iOS exposes no API for it), which is exactly why the ticket
+ * screen also shows a dialog — the one channel that always works.
  */
 export function speak(text: string): void {
   try {
-    Speech.stop();
-    Speech.speak(text, { rate: 0.95 });
+    Tts.stop();
+    Tts.speak(text);
   } catch {
     // Speech is a bonus, never a failure.
   }

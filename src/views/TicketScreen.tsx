@@ -45,12 +45,13 @@ export function TicketScreen({ navigation }: Props) {
     if (live.status === TOKEN_STATUS.pending && previousStatus.current !== TOKEN_STATUS.pending) {
       setCalled(true);
       alertCalled(callText(live.full_token_no, categoryName));
+      void push.notifyCalled(live.full_token_no, data?.category.name_en ?? null);
     }
 
     previousStatus.current = live.status;
   }, [live?.status]);
 
-  // Register this device for a push, so a locked phone still gets told.
+  // Ask for notification permission once, so the local alert can show.
   useEffect(() => {
     if (!ticketKey) {
       return undefined;
@@ -58,11 +59,9 @@ export function TicketScreen({ navigation }: Props) {
 
     let cancelled = false;
 
-    push.register(api(tenant!), ticketKey).then((token) => {
-      if (!cancelled && token) {
-        storage.set(KEYS.pushToken, token);
-      }
-    });
+    if (!cancelled) {
+      void push.prepare();
+    }
 
     return () => {
       cancelled = true;

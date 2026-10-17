@@ -1,13 +1,10 @@
 import './global.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { DependencyProvider, container } from '@/di/container';
-import { bootstrap } from '@/models/db';
 import { RootNavigator } from '@/navigation';
 
 /**
@@ -25,28 +22,12 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    // Local tables must exist before any screen reads cached data.
-    bootstrap();
-    setReady(true);
-  }, []);
-
-  if (!ready) {
-    return (
-      <View className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator color="#6153a3" />
-      </View>
-    );
-  }
-
   return (
     <DependencyProvider value={container}>
       <QueryClientProvider client={queryClient}>
         <SafeAreaProvider>
           <RootNavigator />
-          <StatusBar style="dark" />
+          <StatusBar barStyle="dark-content" />
         </SafeAreaProvider>
       </QueryClientProvider>
     </DependencyProvider>

@@ -1,63 +1,46 @@
-import Constants from 'expo-constants';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
-
-import type { GuestApi } from '@/services/guestApi';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 /**
- * Push registration for the guest's current ticket.
+ * Call alerts while the app is alive.
  *
- * Remote push needs a development build (Expo Go dropped Android remote push),
- * so every call is guarded: on a device that cannot provide a token the app
- * simply falls back to polling, which it does anyway.
+ * This was expo-notifications. Remote push (a locked phone) needs FCM/APNs
+ * credentials and a backend able to send them — the Laravel side currently sends
+ * through Expo's relay, so it changes when push moves to FCM. Until then this
+ * raises a local notification, which is what a guest with the app open needs; the
+ * dialog and the spoken announcement remain the guarantees.
  */
-export async function registerDevice(api: GuestApi, ticketKey: string): Promise<string | null> {
-  if (!Device.isDevice) {
-    return null;
+let prepared = false;
+
+export async function prepare(): Promise<boolean> {
+  if (prepared) {
+    return true;
   }
 
   try {
-    if (Platform.OS === 'android') {
-      // Must match the channelId the server sends, or Android 8+ drops it.
-      await Notifications.setNotificationChannelAsync('default', {
-        name: 'Token calls',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 120, 250],
-        sound: 'default',
-      });
-    }
-
-    const existing = await Notifications.getPermissionsAsync();
-    const granted =
-      existing.granted || (await Notifications.requestPermissionsAsync()).granted;
-
-    if (!granted) {
-      return null;
-    }
-
-    const projectId =
-      Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId ?? undefined;
-
-    const token = (await Notifications.getExpoPushTokenAsync(projectId ? { projectId } : undefined)).data;
-
-    await api.registerDevice({
-      key: ticketKey,
-      expo_push_token: token,
-      platform: Platform.OS,
+    await notifee.requestPermission();
+    await notifee.createChannel({
+      id: 'default',
+      name: 'Token calls',
+      importance: AndroidImportance.HIGH,
+      vibration: true,
     });
 
-    return token;
+    prepared = true;
+
+    return true;
   } catch {
-    // No push is not a broken app: the ticket still polls.
-    return null;
+    return false;
   }
 }
 
-export async function unregisterDevice(api: GuestApi, ticketKey: string, token: string): Promise<void> {
+export async function notifyCalled(fullTokenNo: string | null, counterName?: string | null): Promise<void> {
   try {
-    await api.unregisterDevice({ key: ticketKey, expo_push_token: token });
+    await notifee.displayNotification({
+      title: `Token ${fullTokenNo ?? ''} is called`,
+      body: counterName ? `Please proceed to ${counterName}.` : 'Please proceed to the counter.',
+      android: { channelId: 'default', pressAction: { id: 'default' } },
+    });
   } catch {
-    // Leaving a stale registration behind is harmless; Expo prunes dead ones.
+    // A missed notification must never break the ticket screen.
   }
 }

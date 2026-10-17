@@ -1,12 +1,12 @@
 import { createContext, useContext } from 'react';
 
-import { serviceRepo, ticketRepo } from '@/models/db';
+import { serviceRepo, ticketRepo } from '@/models/store';
 import type { TenantRef } from '@/models/types';
 import type { GuestApi } from '@/services/guestApi';
 import { guestApi } from '@/services/guestApi';
 import type { MobileApi } from '@/services/mobileApi';
 import { mobileApi } from '@/services/mobileApi';
-import { registerDevice, unregisterDevice } from '@/lib/push';
+import { notifyCalled, prepare } from '@/lib/push';
 import { storage } from '@/services/storage';
 
 /**
@@ -22,8 +22,8 @@ export type Container = {
   services: typeof serviceRepo;
   tickets: typeof ticketRepo;
   push: {
-    register: typeof registerDevice;
-    unregister: typeof unregisterDevice;
+    prepare: typeof prepare;
+    notifyCalled: typeof notifyCalled;
   };
   api: (tenant: TenantRef) => GuestApi;
   mobileApi: (tenant: TenantRef) => MobileApi;
@@ -33,7 +33,7 @@ export const container: Container = {
   storage,
   services: serviceRepo,
   tickets: ticketRepo,
-  push: { register: registerDevice, unregister: unregisterDevice },
+  push: { prepare, notifyCalled },
   api: guestApi,
   mobileApi,
 };
