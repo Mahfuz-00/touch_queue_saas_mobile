@@ -1,4 +1,4 @@
-package com.touchqueuemobile
+package com.touchqueue.guest
 
 import android.app.Application
 import com.facebook.react.PackageList
