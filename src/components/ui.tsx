@@ -20,7 +20,7 @@ export function Screen({
     <SafeAreaView className="flex-1 bg-background">
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-4 pb-10"
+        contentContainerClassName="flex-grow px-4 pb-6"
         keyboardShouldPersistTaps="handled"
         {...rest}
       >

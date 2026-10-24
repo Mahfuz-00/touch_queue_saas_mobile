@@ -81,7 +81,7 @@ export function ScanScreen({ navigation }: Props) {
       <Text className="mt-4 text-lg font-bold text-primary">Scan the join code</Text>
       <Text className="mt-1 text-sm text-muted">Point the camera at the QR code at the entrance or reception.</Text>
 
-      <View className="mt-4 h-80 overflow-hidden rounded-2xl border border-border bg-black">
+      <View className="mt-4 flex-1 overflow-hidden rounded-2xl border border-border bg-black">
         {device ? (
           <Camera style={StyleSheet.absoluteFill} device={device} isActive={!handled} codeScanner={codeScanner} />
         ) : (

@@ -12,12 +12,11 @@ import { ScanScreen } from '@/views/ScanScreen';
 import { ServicesScreen } from '@/views/ServicesScreen';
 import { SettingsScreen } from '@/views/SettingsScreen';
 import { StaffBoardScreen } from '@/views/StaffBoardScreen';
-import { TenantScreen } from '@/views/TenantScreen';
 import { TicketScreen } from '@/views/TicketScreen';
+
 
 export type RootStackParamList = {
   Scan: undefined;
-  Tenant: { next?: 'Services' | 'Login' } | undefined;
   Login: undefined;
   StaffBoard: undefined;
   AdminHome: undefined;
@@ -49,7 +48,6 @@ export function RootNavigator() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Scan" component={ScanScreen} />
-        <Stack.Screen name="Tenant" component={TenantScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="StaffBoard" component={StaffBoardScreen} />
         <Stack.Screen name="AdminHome" component={AdminHomeScreen} />

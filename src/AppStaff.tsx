@@ -7,14 +7,12 @@ import { useAuth } from '@/store/auth';
 import { AdminHomeScreen } from '@/views/AdminHomeScreen';
 import { LoginScreen } from '@/views/LoginScreen';
 import { StaffBoardScreen } from '@/views/StaffBoardScreen';
-import { TenantScreen } from '@/views/TenantScreen';
 
 /**
- * The clinic app: sign in, run the counter, see the dashboard.
+ * The staff app: sign in, run the counter, see the dashboard.
  *
- * Nothing from the guest journey is reachable here — no scanner, no ticket, no
- * guest receipt — so a staff build ships no guest code and needs no camera
- * permission.
+ * No guest journey is reachable from this entry — no scanner, no ticket, no
+ * guest receipt — and no guest wording appears in it.
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -29,7 +27,6 @@ export default function StaffApp() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Tenant" component={TenantScreen} />
           <Stack.Screen name="StaffBoard" component={StaffBoardScreen} />
           <Stack.Screen name="AdminHome" component={AdminHomeScreen} />
         </Stack.Navigator>
