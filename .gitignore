@@ -38,4 +38,5 @@ yarn-error.*
 
 # generated native folders
 
-
+# Local release build logs
+*-build.log
