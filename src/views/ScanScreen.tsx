@@ -98,6 +98,22 @@ export function ScanScreen({ navigation }: Props) {
       ) : null}
 
       <Button title="Enter the code instead" variant="ghost" onPress={() => navigation.goBack()} className="mt-4" />
+
+      {__DEV__ ? (
+        <Button
+          title="Dev: enter clinic code"
+          variant="ghost"
+          onPress={() => navigation.navigate('Tenant', { next: 'Services' })}
+          className="mt-1"
+        />
+      ) : null}
+
+      <Button
+        title="Clinic staff sign in"
+        variant="ghost"
+        onPress={() => navigation.navigate('Login')}
+        className="mt-1"
+      />
     </Screen>
   );
 }

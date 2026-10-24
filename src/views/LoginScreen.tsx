@@ -92,14 +92,14 @@ export function LoginScreen({ navigation }: Props) {
       <Button
         title="Continue as a guest"
         variant="outline"
-        onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Services' }] })}
+        onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Scan' }] })}
         className="mt-2"
       />
 
       <Button
         title="Change clinic"
         variant="ghost"
-        onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Tenant' }] })}
+        onPress={() => navigation.navigate('Tenant', { next: 'Login' })}
         className="mt-2"
       />
 

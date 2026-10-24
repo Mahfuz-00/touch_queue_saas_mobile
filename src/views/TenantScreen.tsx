@@ -18,15 +18,16 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Tenant'>;
  * clinic code can also be typed, and the clinics listed in EXPO_PUBLIC_TENANTS
  * are offered as one-tap choices.
  */
-export function TenantScreen({ navigation }: Props) {
+export function TenantScreen({ navigation, route }: Props) {
   const { choose, busy, error } = useChooseTenant();
   const [code, setCode] = useState('');
+  const next = route.params?.next ?? 'Login';
 
   const quickPicks = useMemo(() => QUICK_PICK_TENANTS, []);
 
   const submit = async (subdomain: string) => {
     if (await choose(tenantFromSubdomain(subdomain))) {
-      navigation.reset({ index: 0, routes: [{ name: 'Services' }] });
+      navigation.reset({ index: 0, routes: [{ name: next }] });
     }
   };
 

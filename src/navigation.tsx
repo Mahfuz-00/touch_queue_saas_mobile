@@ -16,11 +16,11 @@ import { TenantScreen } from '@/views/TenantScreen';
 import { TicketScreen } from '@/views/TicketScreen';
 
 export type RootStackParamList = {
-  Tenant: undefined;
+  Scan: undefined;
+  Tenant: { next?: 'Services' | 'Login' } | undefined;
   Login: undefined;
   StaffBoard: undefined;
   AdminHome: undefined;
-  Scan: undefined;
   Services: undefined;
   Confirm: { service: Service };
   Ticket: undefined;
@@ -31,35 +31,28 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 /**
- * Where the app opens depends on who is using it: no clinic chosen means the
- * picker, a signed-in clinic user means their board or dashboard, a guest with a
- * live ticket means the ticket, and everyone else gets the sign-in screen (which
- * still offers the guest journey).
+ * Where the app opens.
+ *
+ * Guests start at the scanner — there is no clinic to pick, the QR carries it.
+ * Clinic users open their board or dashboard, and anyone not signed in reaches
+ * sign-in from the scanner. The manual clinic picker is only a development
+ * convenience, because an emulator cannot scan a code.
  */
 export function RootNavigator() {
   const tenant = useSession((state) => state.tenant);
-  const ticketKey = useSession((state) => state.ticketKey);
   const token = useAuth((state) => state.token);
   const isStaff = useAuth((state) => state.isStaff);
 
-  const initialRouteName = !tenant
-    ? 'Tenant'
-    : token
-      ? isStaff
-        ? 'StaffBoard'
-        : 'AdminHome'
-      : ticketKey
-        ? 'Ticket'
-        : 'Login';
+  const initialRouteName = token ? (isStaff ? 'StaffBoard' : 'AdminHome') : 'Scan';
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Scan" component={ScanScreen} />
         <Stack.Screen name="Tenant" component={TenantScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="StaffBoard" component={StaffBoardScreen} />
         <Stack.Screen name="AdminHome" component={AdminHomeScreen} />
-        <Stack.Screen name="Scan" component={ScanScreen} options={{ presentation: 'modal' }} />
         <Stack.Screen name="Services" component={ServicesScreen} />
         <Stack.Screen name="Confirm" component={ConfirmScreen} />
         <Stack.Screen name="Ticket" component={TicketScreen} />
