@@ -21,7 +21,7 @@ react {
     //   Adding flavours renames every variant (devDebug, prodRelease, ...), so the
     //   debuggable ones have to be listed explicitly — otherwise the plugin skips
     //   bundling JavaScript in exactly the builds that need a bundled bundle.
-    debuggableVariants = ["devDebug", "devDebugOptimized", "prodDebug", "prodDebugOptimized"]
+    debuggableVariants = ["guestDebug", "guestDebugOptimized", "staffDebug", "staffDebugOptimized"]
 
     /* Bundling */
     //   A list containing the node command and its flags. Default is just 'node'.
@@ -108,27 +108,31 @@ android {
         }
     }
 
-    flavorDimensions "env"
+    flavorDimensions "app"
     productFlavors {
         /*
-         * For manual testing: installs alongside the real app (its own
-         * application id) and is labelled so you can tell them apart.
+         * Two installable apps from one codebase.
          *
-         * Build a self-contained APK with the JS bundled — a `debug` APK expects
-         * Metro over adb reverse and is useless on a standalone phone:
-         *   gradlew assembleDevRelease
+         * The JavaScript entry differs per app and is chosen at build time with the
+         * ENTRY_FILE environment variable, which the React Native Gradle plugin
+         * reads (TaskConfiguration.kt). Build one app per invocation:
+         *
+         *   $env:ENTRY_FILE='index.guest.js'; gradlew :app:assembleGuestRelease
+         *   $env:ENTRY_FILE='index.staff.js'; gradlew :app:assembleStaffRelease
+         *
+         * Because Metro bundles from the entry, the guest build contains no staff
+         * screens and the staff build contains no guest screens.
          */
-        dev {
-            dimension "env"
-            applicationIdSuffix ".dev"
-            versionNameSuffix "-dev"
-            resValue "string", "app_name", "Touch Queue Dev"
+        guest {
+            dimension "app"
+            applicationId "com.touchqueue.guest"
+            resValue "string", "app_name", "Touch Queue"
         }
 
-        /* What ships to a clinic. */
-        prod {
-            dimension "env"
-            resValue "string", "app_name", "Touch Queue"
+        staff {
+            dimension "app"
+            applicationId "com.touchqueue.staff"
+            resValue "string", "app_name", "Touch Queue Staff"
         }
     }
 
