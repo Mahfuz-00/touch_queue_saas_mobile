@@ -16,6 +16,7 @@ import { TenantScreen } from '@/views/TenantScreen';
 import { TicketScreen } from '@/views/TicketScreen';
 
 export type RootStackParamList = {
+  Space: undefined;
   Scan: undefined;
   Tenant: { next?: 'Services' | 'Login' } | undefined;
   Login: undefined;

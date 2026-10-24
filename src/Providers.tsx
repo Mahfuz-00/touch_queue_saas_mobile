@@ -6,6 +6,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { DependencyProvider, container } from '@/di/container';
 import { initStorage } from '@/services/storage';
+import { useAuth } from '@/store/auth';
+import { useSession } from '@/store/session';
 
 /**
  * Everything an app shell needs, shared by the guest and staff entries.
@@ -29,9 +31,14 @@ export function Providers({ children }: { children: ReactNode }) {
   );
 
   // Storage is read synchronously from memory, so it must load before the first
-  // screen renders.
+  // screen renders. Both stores are re-read afterwards: they are created at
+  // module load, before the async storage has finished reading from disk.
   useEffect(() => {
-    initStorage().finally(() => setReady(true));
+    initStorage().finally(() => {
+      useSession.getState().hydrate();
+      useAuth.getState().hydrate();
+      setReady(true);
+    });
   }, []);
 
   if (!ready) {

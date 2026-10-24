@@ -22,6 +22,8 @@ type AuthState = Persisted & {
   isAdmin: boolean;
   signIn: (session: Persisted) => void;
   signOut: () => void;
+  /** Re-read the persisted session. Storage is async, so this runs after it loads. */
+  hydrate: () => void;
 };
 
 const stored = readJSON<Persisted>(KEYS.auth);
@@ -33,6 +35,19 @@ export const useAuth = create<AuthState>((set) => ({
   abilities: stored?.abilities ?? [],
   isStaff: (stored?.abilities ?? []).includes('staff'),
   isAdmin: (stored?.abilities ?? []).includes('tenant-admin'),
+
+  hydrate: () => {
+    const session = readJSON<Persisted>(KEYS.auth);
+
+    set({
+      token: session?.token ?? '',
+      user: session?.user ?? { id: 0, name: '', email: '', role: null },
+      capabilities: session?.capabilities ?? {},
+      abilities: session?.abilities ?? [],
+      isStaff: (session?.abilities ?? []).includes('staff'),
+      isAdmin: (session?.abilities ?? []).includes('tenant-admin'),
+    });
+  },
 
   signIn: (session) => {
     writeJSON(KEYS.auth, session);

@@ -14,11 +14,20 @@ type SessionState = {
   setTenant: (tenant: TenantRef) => void;
   setTicketKey: (key: string | null) => void;
   forgetTenant: () => void;
+  /** Re-read persisted values. Storage is async, so this runs after it loads. */
+  hydrate: () => void;
 };
 
 export const useSession = create<SessionState>((set) => ({
   tenant: readJSON<TenantRef>(KEYS.tenant),
   ticketKey: storage.getString(KEYS.ticketKey) ?? null,
+
+  hydrate: () => {
+    set({
+      tenant: readJSON<TenantRef>(KEYS.tenant),
+      ticketKey: storage.getString(KEYS.ticketKey) ?? null,
+    });
+  },
 
   setTenant: (tenant) => {
     writeJSON(KEYS.tenant, tenant);

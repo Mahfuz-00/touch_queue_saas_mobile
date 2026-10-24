@@ -19,17 +19,17 @@ export function SettingsScreen({ navigation }: Props) {
   const tickets = useDependency('tickets');
   const pushToken = storage.getString(KEYS.pushToken);
 
-  const changeClinic = () => {
+  const changeSpace = () => {
     setTicketKey(null);
     forgetTenant();
-    navigation.reset({ index: 0, routes: [{ name: 'Tenant' }] });
+    navigation.reset({ index: 0, routes: [{ name: 'Space' }] });
   };
 
   const clearDevice = () => {
     tickets.clear();
     setTicketKey(null);
     forgetTenant();
-    navigation.reset({ index: 0, routes: [{ name: 'Tenant' }] });
+    navigation.reset({ index: 0, routes: [{ name: 'Space' }] });
   };
 
   return (
@@ -37,7 +37,7 @@ export function SettingsScreen({ navigation }: Props) {
       <Text className="pt-4 text-lg font-bold text-primary">Settings</Text>
 
       <Card className="mt-4">
-        <Text className="text-sm font-semibold text-black">Clinic</Text>
+        <Text className="text-sm font-semibold text-black">Space</Text>
         <Text className="mt-1 text-sm text-muted">{tenant?.name ?? 'Not selected'}</Text>
         <Text className="mt-1 text-xs text-muted">{tenant ? hostFor(tenant) : '-'}</Text>
       </Card>
@@ -52,8 +52,8 @@ export function SettingsScreen({ navigation }: Props) {
         notifications are allowed for Touch Queue in your phone settings.
       </Text>
 
-      <Button title="Change clinic" variant="outline" onPress={changeClinic} className="mt-6" />
-      <Button title="Clear tickets and clinic" variant="ghost" onPress={clearDevice} className="mt-2" />
+      <Button title="Change space" variant="outline" onPress={changeSpace} className="mt-6" />
+      <Button title="Clear tickets and space" variant="ghost" onPress={clearDevice} className="mt-2" />
       <Button title="Back" variant="ghost" onPress={() => navigation.goBack()} className="mt-2" />
     </Screen>
   );
