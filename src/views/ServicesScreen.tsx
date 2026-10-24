@@ -117,7 +117,7 @@ export function ServicesScreen({ navigation }: Props) {
       </View>
 
       <View className="mt-4 items-center">
-        <Badge text={`Clinic: ${tenant?.subdomain ?? '-'}`} tone="muted" />
+        <Badge text={init?.branding.name ?? tenant?.name ?? tenant?.subdomain ?? '-'} tone="muted" />
       </View>
     </Screen>
   );

@@ -45,8 +45,8 @@ export function LoginScreen({ navigation }: Props) {
   return (
     <Screen>
       <View className="pt-6">
-        <Text className="text-2xl font-bold text-primary">{tenant?.name ?? 'Clinic'}</Text>
-        <Text className="mt-1 text-sm text-muted">Sign in with your clinic account.</Text>
+        <Text className="text-2xl font-bold text-primary">{tenant?.name ?? 'Space'}</Text>
+        <Text className="mt-1 text-sm text-muted">Sign in with your space account.</Text>
         <Text className="mt-1 text-xs text-muted">{tenant ? hostFor(tenant) : ''}</Text>
       </View>
 
@@ -97,7 +97,7 @@ export function LoginScreen({ navigation }: Props) {
       />
 
       <Button
-        title="Change clinic"
+        title="Change space"
         variant="ghost"
         onPress={() => navigation.navigate('Tenant', { next: 'Login' })}
         className="mt-2"
@@ -105,7 +105,7 @@ export function LoginScreen({ navigation }: Props) {
 
       {isAdmin ? null : (
         <Text className="mt-4 text-center text-xs text-muted">
-          Only clinic staff and admins have accounts. Guests just take a token.
+          Only space staff and admins have accounts. Guests just take a token.
         </Text>
       )}
     </Screen>

@@ -22,14 +22,14 @@ export function SettingsScreen({ navigation }: Props) {
   const changeSpace = () => {
     setTicketKey(null);
     forgetTenant();
-    navigation.reset({ index: 0, routes: [{ name: 'Space' }] });
+    navigation.reset({ index: 0, routes: [{ name: 'Scan' }] });
   };
 
   const clearDevice = () => {
     tickets.clear();
     setTicketKey(null);
     forgetTenant();
-    navigation.reset({ index: 0, routes: [{ name: 'Space' }] });
+    navigation.reset({ index: 0, routes: [{ name: 'Scan' }] });
   };
 
   return (

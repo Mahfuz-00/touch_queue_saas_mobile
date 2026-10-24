@@ -34,22 +34,22 @@ export function TenantScreen({ navigation, route }: Props) {
   return (
     <Screen>
       <View className="pt-6 pb-2">
-        <Text className="text-2xl font-bold text-primary">Join a queue</Text>
+        <Text className="text-2xl font-bold text-primary">Choose your space</Text>
         <Text className="mt-1 text-sm text-muted">
-          Find the clinic you are visiting to take your place in line.
+          Find the space you work at to sign in.
         </Text>
       </View>
 
-      <Button title="Scan the clinic's QR code" onPress={() => navigation.navigate('Scan')} className="mt-4" />
+      <Button title="Scan the space's QR code" onPress={() => navigation.navigate('Scan')} className="mt-4" />
 
       <View className="my-5 flex-row items-center gap-3">
         <View className="h-px flex-1 bg-border" />
-        <Text className="text-xs uppercase text-muted">or enter the clinic code</Text>
+        <Text className="text-xs uppercase text-muted">or enter the space code</Text>
         <View className="h-px flex-1 bg-border" />
       </View>
 
       <Field
-        label="Clinic code"
+        label="Space code"
         value={code}
         onChangeText={setCode}
         placeholder="metro"
@@ -74,7 +74,7 @@ export function TenantScreen({ navigation, route }: Props) {
 
       {quickPicks.length > 0 ? (
         <Card className="mt-6">
-          <Text className="text-sm font-semibold text-black">Clinics on this device</Text>
+          <Text className="text-sm font-semibold text-black">Spaces on this device</Text>
           <Text className="mt-1 text-xs text-muted">
             Convenience list for development, from EXPO_PUBLIC_TENANTS.
           </Text>

@@ -119,7 +119,7 @@ export function StaffBoardScreen({ navigation }: Props) {
 
       {error ? (
         <View className="mt-4">
-          <Notice text="Lost connection to the clinic. Retrying…" tone="error" />
+          <Notice text="Lost connection to the space. Retrying…" tone="error" />
         </View>
       ) : null}
     </Screen>

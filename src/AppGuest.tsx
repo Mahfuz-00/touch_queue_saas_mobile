@@ -9,30 +9,26 @@ import { HistoryScreen } from '@/views/HistoryScreen';
 import { ScanScreen } from '@/views/ScanScreen';
 import { ServicesScreen } from '@/views/ServicesScreen';
 import { SettingsScreen } from '@/views/SettingsScreen';
-import { SpaceScreen } from '@/views/SpaceScreen';
 import { TicketScreen } from '@/views/TicketScreen';
 
 /**
- * The guest app: pick the space once, then join its queue.
+ * The guest app: scan the space's code and follow the queue.
  *
- * Only guest screens are reachable from this entry — there is no sign-in, no
- * counter board and no dashboard anywhere in this bundle, so a guest build
- * carries no staff code at all.
+ * Nothing is typed. The QR carries which space the guest is visiting, and the
+ * space's own name is shown on the screens that follow. There is no sign-in, no
+ * counter board and no dashboard anywhere in this bundle.
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function GuestApp() {
-  const tenant = useSession((state) => state.tenant);
   const ticketKey = useSession((state) => state.ticketKey);
 
-  // The space is remembered, so it is only asked for the first time.
-  const initialRouteName = !tenant ? 'Space' : ticketKey ? 'Ticket' : 'Scan';
+  const initialRouteName = ticketKey ? 'Ticket' : 'Scan';
 
   return (
     <Providers>
       <NavigationContainer>
         <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Space" component={SpaceScreen} />
           <Stack.Screen name="Scan" component={ScanScreen} />
           <Stack.Screen name="Services" component={ServicesScreen} />
           <Stack.Screen name="Confirm" component={ConfirmScreen} />

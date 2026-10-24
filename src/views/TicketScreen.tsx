@@ -137,7 +137,7 @@ export function TicketScreen({ navigation }: Props) {
       {error ? (
         <View className="mt-4">
           <Notice
-            text="Losing connection to the clinic. This page keeps trying."
+            text="Losing connection to the space. This page keeps trying."
             tone="error"
           />
         </View>

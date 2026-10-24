@@ -4,8 +4,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
 
 import { Button, Notice, Screen } from '@/components/ui';
+import { QUICK_PICK_TENANTS } from '@/config';
 import { useChooseTenant } from '@/controllers/tenant';
-import { parseJoinUrl } from '@/lib/utils';
+import { parseJoinUrl, tenantFromSubdomain } from '@/lib/utils';
 import type { RootStackParamList } from '@/navigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Scan'>;
@@ -68,10 +69,9 @@ export function ScanScreen({ navigation }: Props) {
       <Screen>
         <Text className="mt-6 text-lg font-bold text-primary">Camera access needed</Text>
         <Text className="mt-1 text-sm text-muted">
-          Touch Queue uses the camera only to read the clinic's join code.
+          Touch Queue uses the camera only to read the space's code.
         </Text>
         <Button title="Allow camera" onPress={() => requestPermission()} className="mt-4" />
-        <Button title="Enter the code instead" variant="ghost" onPress={() => navigation.goBack()} className="mt-2" />
       </Screen>
     );
   }
@@ -89,7 +89,7 @@ export function ScanScreen({ navigation }: Props) {
         )}
       </View>
 
-      {busy ? <Text className="mt-3 text-center text-sm text-muted">Checking the clinic…</Text> : null}
+      {busy ? <Text className="mt-3 text-center text-sm text-muted">Checking the space…</Text> : null}
 
       {error ? (
         <View className="mt-3">
@@ -97,13 +97,11 @@ export function ScanScreen({ navigation }: Props) {
         </View>
       ) : null}
 
-      <Button title="Enter the code instead" variant="ghost" onPress={() => navigation.goBack()} className="mt-4" />
-
       {__DEV__ ? (
         <Button
-          title="Dev: choose space"
+          title="Dev: use test space"
           variant="ghost"
-          onPress={() => navigation.navigate('Space')}
+          onPress={() => choose(tenantFromSubdomain(QUICK_PICK_TENANTS[0]))}
           className="mt-1"
         />
       ) : null}
